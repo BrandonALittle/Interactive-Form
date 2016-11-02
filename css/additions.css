@@ -1,0 +1,8 @@
+
+input ~ div {
+    color: indianred;
+    text-decoration: underline;
+    font-weight: 600;
+    font-size: 1.2em;
+}
+
