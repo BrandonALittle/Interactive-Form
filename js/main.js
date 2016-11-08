@@ -1,47 +1,53 @@
-// set required inputs
-function initializeValidation() {
+// set required inputs and hide t-shirt color select menu
+function initializeForm() {
     //require name and email
     document.querySelector("#name").setAttribute("required", "true");
     document.querySelector("#mail").setAttribute("required", "true");
-    document.querySelector("button[type='submit']").disabled=true;
+    var colorLabel = document.querySelector("label[for='color']");
+    var colorSelect = document.querySelector("#color");
+    colorLabel.className = "is-hidden";
+    colorSelect.className = "is-hidden";
 }
 
 // hide the text field for the "other" title
 function hideOtherTitleInput() {
-    var otherTitleLabel = document.querySelector("#otherLabel");
-    var otherTitle = document.querySelector("#other-title");
-    otherTitleLabel.className = "is-hidden";
+    var otherTitleLabel = document.querySelector("#otherLabel"); // get the other title label
+    var otherTitle = document.querySelector("#other-title"); // get the other title text field
+    otherTitleLabel.className = "is-hidden"; // hide them
     otherTitle.className = "is-hidden";
-};
+}
 
 // show the "other" text field when the "other" option is selected
 function addOtherJobOption() {
-    var jobSelector = document.querySelector("#title");
-    jobSelector.addEventListener("change", function() {
-        var otherTitleLabel = document.querySelector("#otherLabel");
-        var otherOption = document.querySelector("#other-title");
-        if (jobSelector.selectedIndex === 5){
-            otherOption.className = "is-not-hidden";
-            otherTitleLabel.className = "is-not-hidden";
+    var jobSelector = document.querySelector("#title"); // get the title select menu
+    jobSelector.addEventListener("change", function () { // listen for a change
+        var otherTitleLabel = document.querySelector("#otherLabel"); // get the other title label
+        var otherOption = document.querySelector("#other-title"); // get the other title text field
+        if (jobSelector.selectedIndex === 5) { // if 'other' is selected
+            otherOption.className = "is-not-hidden"; // show the text field
+            otherTitleLabel.className = "is-not-hidden"; // and label
         } else {
-            hideOtherTitleInput();
+            hideOtherTitleInput(); // or make sure the label and text field are hidden
         }
-    })
-};
+    });
+}
 
 // bind changes to shirt styles to design selection
 function bindShirtOptions () {
-    var designSelect = document.querySelector("#design");
-    designSelect.addEventListener("change", adjustShirtOptions);
-};
+    var designSelect = document.querySelector("#design"); // get the design select menu
+    designSelect.addEventListener("change", adjustShirtOptions); // listen for a change and run a function to change the color options
+}
 
 // show or hide color choices depending on user selection of shirt design
 function adjustShirtOptions() {
     var designSelect = document.querySelector("#design"); // get the design select element
+    var colorLabel = document.querySelector("label[for='color']"); // get the color label element
     var colorSelect = document.querySelector("#color"); // get the color select element
     var colorChoices = colorSelect.children; // get the color options
     if (designSelect.selectedIndex === 1) { // assign color choices to corresponding design selection index
-        for (i=0; i<3; i++) {
+        colorLabel.className = "";
+        colorSelect.className = "";
+        for (var i=0; i<3; i++) {
             colorChoices[i].className = ""; // show first set of choices
         }
         for (i=3; i<colorChoices.length; i++) {
@@ -49,7 +55,9 @@ function adjustShirtOptions() {
         }
         colorSelect.selectedIndex = 0; 
     } else if (designSelect.selectedIndex === 2) {
-        for (i=0; i<3; i++) {
+        colorLabel.className = ""; // show the color label
+        colorSelect.className = ""; // show the color select menu
+        for (var i=0; i<3; i++) {
             colorChoices[i].className = "is-hidden"; // hide first set of choices
         }
         for (i=3; i<colorChoices.length; i++) {
@@ -57,12 +65,10 @@ function adjustShirtOptions() {
         }
         colorSelect.selectedIndex = 3;
     } else {
-        for (i=0; i<colorChoices.length; i++) {
-            colorChoices[i].className = ""; // show all choices
-        }
-        colorSelect.selectedIndex = 0;
+        colorSelect.className = "is-hidden"; // hide the color select menu
+        colorLabel.className = "is-hidden"; // hide the color label
     }
-};
+}
 
 // bind visible payment options to payment select
 function showPaymentOptions() {
@@ -71,7 +77,7 @@ function showPaymentOptions() {
     paymentOptions[0].setAttribute("class", "is-hidden"); // hide text
     paymentOptions[1].setAttribute("class", "is-hidden");
     paymentSelect.addEventListener("change", adjustPaymentDisplay); // bind changes in select menu to changes in payment display
-};
+}
 
 // change payment display based on menu selection
 function adjustPaymentDisplay() {
@@ -95,7 +101,7 @@ function adjustPaymentDisplay() {
         paymentOptions[0].setAttribute("class", "is-hidden");
         paymentOptions[1].setAttribute("class", "is-hidden");
     }
-};
+}
 
 // create messages, attach them to divs, and bind change event to check for conflicts
 function bindScheduleCheck() {
@@ -105,14 +111,14 @@ function bindScheduleCheck() {
     var schedule = document.querySelector("fieldset[class='activities']"); // get activities fieldset
     var activities = schedule.getElementsByTagName("input"); // get input element of the fieldset, which is the set of choices
     schedule.appendChild(cost); // append message to bottom of options
-    for (i=0; i<activities.length; i++) { // for each activity,
+    for (var i=0; i<activities.length; i++) { // for each activity,
         var notice = document.createElement("div"); // create a div
         notice.innerText = "THIS EVENT IS UNAVAILABLE DUE TO YOUR CURRENT SELECTION"; // fill it with message communicating conflict
         notice.setAttribute("class", "is-hidden"); // hide the message
         activities[i].parentElement.appendChild(notice); // add the message to the schedule choice
         activities[i].addEventListener("change", adjustEvents); // bind a change event to each choice and run adjustEvents function when selections are made
     }
-};
+}
 
 // check for conflicts, calculate total cost, and display or hide conflict and cost messages
 function adjustEvents() {
@@ -122,7 +128,7 @@ function adjustEvents() {
     if (activities[0].checked) { // add 200 to cost for conference
         totalCost += 200;
     }
-    for (i=0; i<activities.length; i++) { // for each activity
+    for (var i=0; i<activities.length; i++) { // for each activity
         activities[i].removeAttribute("disabled"); // enable all choices
         activities[i].nextElementSibling.setAttribute("class", "is-hidden"); // hide conflict message
     }
@@ -149,37 +155,39 @@ function adjustEvents() {
         }
     }
     document.getElementById("cost").innerText = "TOTAL COST = $" + totalCost; // show new total
-    
-};
+}
 
 // check that at least one activity is checked
 function checkForActivity() {
-    var activitiesSet = document.querySelectorAll("input[type='checkbox']");
-    var numOfActivities = 0;
-    for (i=0; i<activitiesSet.length; i++) {
-        numOfActivities++;
+    var activitiesSet = document.querySelectorAll("input[type='checkbox']"); // get array of checkboxes
+    var numOfActivities = 0; // set number of selected activities to zero
+    for (var i=0; i<activitiesSet.length; i++) { // for each activity checkbox
+        if (activitiesSet[i].checked === true) { // if it is checked
+            numOfActivities++; // increment the selected activities counter
+        }
     }
-    //get list of activity inputs
-    if (activitiesSet.length > 0) { //check that at least one activity is selected
+    if (numOfActivities > 0) { //check that at least one activity is selected
         return true;
     } else {
         return false;
     }//return true or false
-};
+}
 
-// verify credit card information has been entered
+// verify credit card information has been entered and number is valid
 function checkCreditCard() {
-    var ccvalid = false;
-    var creditNum = document.querySelector("#cc-num").value;
-    var zip = document.querySelector("#zip").value;
-    var cvc = document.querySelector("#cvv").value;
-    if (number.length > 0) {
+    var ccvalid = false; // set validity to false by default
+    var creditNum = document.querySelector("#cc-num").value; // get the CC number
+    var zip = document.querySelector("#zip").value; // get the zip code
+    var cvc = document.querySelector("#cvv").value; // get the CVC 
+    if (creditNum !== null && creditNum.length > 0) { // check that a number has been entered
         ccvalid = verifyCCNumber(creditNum); // verify credit card number
+    } else {
+        return false;
     }
-    if (ccvalid = true && zip.length === 5 && cvc.length === 3) {
+    if (ccvalid === true && zip.length === 5 && cvc.length === 3) {
         return true; // return true if all is in order
     }
-};
+}
 
 // confirm credit card number is valid
 function verifyCCNumber(creditNum) {
@@ -189,7 +197,7 @@ function verifyCCNumber(creditNum) {
     var lastDig = creditNum.pop(); // get last digit
     var creditNumRev = creditNum.reverse(); // reverse number order
     var total;
-    for (i=0; i<creditNumRev.length; i+=2) { // for odd numbers
+    for (var i=0; i<creditNumRev.length; i+=2) { // for odd numbers
         creditNumRev[i] *= 2; // double the number
         if (creditNumRev[i] > 9) { // for numbers greater than nine, subtract nine
             creditNumRev[i] -= 9;
@@ -201,7 +209,7 @@ function verifyCCNumber(creditNum) {
     } else {
         return false;
     }
-};
+}
 
 // check all necessary elements to validate form
 function validateForm() {
@@ -215,25 +223,29 @@ function validateForm() {
         if (verify === true) {
             verifiedPayment = true;
         }
-    } else { // else payment selection is true
+    } else { // else payment selection is true -- user selects paypal or bitcoin
         verifiedPayment = true;
     }
     if (verifiedActivity === true && verifiedPayment === true) { // if activity and payment info is valid, 
-       document.querySelector("button[type='submit']").disabled=false; // enable submit button
+        return true;
     } else {
-        document.querySelector("button[type='submit']").disabled=true; 
+        return false; 
     }
-    console.log("The form has been checked");
-};
+}
 
-// bind validation check to submit button when mouse hovers over submit
+// bind validation check to submission event
 function bindSubmitValidation() {
-    validateForm(); // run validation check
-    document.querySelector("button[type='submit']").addEventListener("mouseover", validateForm);
-};
+    var form = document.getElementsByTagName("form")[0]; // get the form element
+    form.addEventListener("submit", function(event) { // listen for submission
+        var check = validateForm(); // check for correct and valid info
+        if (check !== true) { // if something is wrong
+            event.preventDefault(); // prevent submission event
+        }
+    });
+}
 
 function main() {
-    initializeValidation(); // initialize form
+    initializeForm(); // initialize form
     document.querySelector("#name").focus(); // give focus to name field
     hideOtherTitleInput(); // hide the other title text field
     addOtherJobOption(); // bind display of 'other' text field to select menu
@@ -241,7 +253,7 @@ function main() {
     showPaymentOptions(); // show payment info depending on selection
     bindScheduleCheck(); // bind check for schedule selection
     bindSubmitValidation(); // bind form validation to submit button
-};
+}
 
 window.onload = main; // run main function when page is loaded
 
